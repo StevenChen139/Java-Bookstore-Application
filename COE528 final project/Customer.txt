@@ -1,0 +1,94 @@
+package coe528finalproject;
+
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+/**
+ *
+ * @author stevenchen
+ */
+public class Customer {
+    private String username;
+    private String password;
+    private int points;
+    
+    private final int pointsBuyValue = 10;
+    private final int pointsRedeemedValue = 100;
+    
+    public Customer(String username, String password, int points){
+        this.username = username;
+        this.password = password;
+        this.points = points;
+    }
+    
+    public Customer(String username, String password){
+        this.username = username;
+        this.password = password;
+        this.points = 0;
+    }
+    public String getUsername(){
+        return username;
+    }
+    
+    public String getPassword(){
+        return password;
+    }
+    
+    public int getPoints(){
+        return points;
+    }
+    
+    public String getRank(){
+        if (points < 1000){
+            return "Silver";
+        }
+        return "Gold";
+    }
+    
+    public void setPoints(int points){
+        this.points = points;
+    }
+    
+    public ObservableList<Book> chosenBooks(ObservableList<Book> books){
+        ObservableList<Book> chosenBooks = FXCollections.observableArrayList();
+        for (int i = 0; i < books.size(); i++){
+            if(books.get(i).getCheck().isSelected()){
+                chosenBooks.add(books.get(i));
+            }
+        }
+        return chosenBooks;
+    } 
+    
+
+    public double buyBook(ObservableList<Book> chosenBooks){
+        double cost = 0;
+        System.out.println(chosenBooks.size());
+        for(int i = 0; i < chosenBooks.size(); i++){
+            cost = cost + chosenBooks.get(i).getPrice();
+        }
+        points = points + (int)cost * pointsBuyValue;
+        return cost;
+    }
+    
+    public double redeemBuyBook(ObservableList<Book> chosenBooks){
+        double cost = 0;
+        System.out.println(chosenBooks.size());
+        for(int i = 0; i < chosenBooks.size(); i++){
+            cost = cost + chosenBooks.get(i).getPrice();
+        }
+       
+        if (points >= (int)cost * pointsRedeemedValue){
+            points = points - (int)cost* pointsRedeemedValue;
+            cost = 0;
+        }else{
+            cost = cost - points/pointsRedeemedValue;
+            points = points % 100;
+            points = points + (int)cost * pointsBuyValue;
+        }
+        return cost;
+    }
+}
